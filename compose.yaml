@@ -1,0 +1,34 @@
+services:
+  app:
+    build:
+      context: .
+    restart: unless-stopped
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - "5000:5000"
+    environment:
+      ENVIRONMENT: local
+    depends_on:
+      - postgres
+      - cache
+      
+  postgres:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: di-real-app-example
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  cache:
+    image: valkey/valkey:alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgresql_data:
